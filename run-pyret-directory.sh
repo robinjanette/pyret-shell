@@ -20,51 +20,52 @@
 PYRETDIR="../pyret-lang/" #PATH TO PYRET REPO, MUST BE CHANGED FROM DEFAULT
 
 #No relative path supplied
-if [[ "$#" < "1" ]]; then
+if [[ "$#" -lt "1" ]]; then
 	echo Usage: ./run-pyret.sh relative/path/to/pyret/files/from/Pyret/repo
 	exit 0
 fi
 
 #Output to stdout
-if [[ "$#" < "2" ]]; then
+if [[ "$#" -lt "2" ]]; then
 	#if compiled directory does not exist, then create it, otherwise continue
 	if [[ ! -d "$1/compiled/" ]]; then
 		mkdir "$1/compiled/"
 	fi
 	
 	#for each file in the directory
-	for i in $( ls $1 ); do
+	for i in "$1"/*.arr; do
+		j="${i#../*/}"
 	
-		if [[ $i == "compiled" ]]; then
+		if [[ "$j" == "compiled" ]]; then
 			#don't try to compile the compiled directory
 			break
 		fi
 
 		echo -------------------------------------------------
-		echo Input file: $i
+		echo Input file: "$j"
 		echo -------------------------------------------------		
 		
 		#get the output file and input file names
-		outfilename="${i%.*}"
-		outfile="$1/compiled/$outfilename.jarr"
-		infile="$1/$i"
+		OUTFILENAME="${j%.*}"
+		OUTFILE="$1/compiled/$OUTFILENAME.jarr"
+		INFILE="$1/$j"
 		
-		cd $PYRETDIR
+		cd "$PYRETDIR" || exit
 		#compile the input file
 		node build/phase0/pyret.jarr \
-			--build-runnable $infile \
-			--outfile $outfile \
+			--build-runnable "$INFILE" \
+			--outfile "$OUTFILE" \
 			--builtin-js-dir src/js/trove/ \
 			--builtin-arr-dir src/arr/trove \
 			--require-config src/scripts/standalone-configA.json
 
-		if [[ -a $outfile ]]; then
+		if [[ -a "$OUTFILE" ]]; then
 			#if the standalone .jarr file was created, run that file
-			node $outfile
+			node "$OUTFILE"
 		else
 			#print that the compilation failed
 			echo -------------------------------------------------
-			echo Compilation failed for file: $i
+			echo Compilation failed for file: "$j"
 			echo -------------------------------------------------
 		fi
 		echo

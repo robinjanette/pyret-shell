@@ -20,38 +20,38 @@
 PYRETDIR="../pyret-lang/" #PATH TO PYRET REPO, MUST BE CHANGED FROM DEFAULT
 
 #No relative path supplied
-if [[ "$#" < "1" ]]; then
+if [[ "$#" -lt "1" ]]; then
 	echo Usage: ./run-pyret.sh relative/path/to/pyret/file/from/Pyret/repo/file.arr
 	exit 0
 fi
 
 #Output to stdout
-if [[ "$#" < "2" ]]; then
+if [[ "$#" -lt "2" ]]; then
         echo -------------------------------------------------
-	echo Input file: $1
+	echo Input file: "$1"
 	echo -------------------------------------------------		
 		
 	#get the output file and input file names
-        outfilename="${1%.*}"
-        outfile="$outfilename.jarr"
-        infile=$1
+        OUTFILENAME="${1%.*}"
+        OUTFILE="$OUTFILENAME.jarr"
+        INFILE=$1
 	
-	cd $PYRETDIR
+	cd "$PYRETDIR" || exit
         #compile the input file
-        node build/phase0/pyret.jarr \
-		--build-runnable $infile \
-		--outfile $outfile \
+	node build/phase0/pyret.jarr \
+		--build-runnable "$INFILE" \
+		--outfile "$OUTFILE" \
 		--builtin-js-dir src/js/trove/ \
 		--builtin-arr-dir src/arr/trove \
 		--require-config src/scripts/standalone-configA.json
 
-	if [[ -a $outfile ]]; then
+	if [[ -a "$OUTFILE" ]]; then
 		#if the standalone .jarr file was created, run that file
-		node $outfile
+		node "$OUTFILE"
 	else
 		#print that the compilation failed
 		echo -------------------------------------------------
-		echo Compilation failed for file: $infile
+		echo Compilation failed for file: "$INFILE"
 		echo -------------------------------------------------
 	fi
 fi
