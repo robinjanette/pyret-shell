@@ -17,7 +17,7 @@ There are two shell scripts in this repository, run-pyret-file.sh and run-pyret-
 
 run-pyret-file.sh expects one argument, the path from the Pyret repository to a Pyret .arr file. This script will compile and run this file and produce a .jarr file of the same name and in the same location as the input file. 
 
-run-pyret-file.sh expects one argument, the path from the Pyret repository to a directory containing Pyret .arr files. This script will attempt to compile and run every file in the directory and will store the output .jarr files in a new directory within the current directory called compiled.
+run-pyret-directory.sh expects one argument, the path from the Pyret repository to a directory containing Pyret .arr files. This script will attempt to compile and run every file in the directory and will store the output .jarr files in a new directory within the current directory called compiled.
 
 For both scripts, the input path MUST be relative. There is currently an open issue in the Pyret repository (https://github.com/brownplt/pyret-lang/issues/969) where absolute paths cause failures. 
 
