@@ -34,7 +34,7 @@ if [[ "$#" -lt "2" ]]; then
 	
 	#for each file in the directory
 	for i in "$1"/*.arr; do
-		j="${i#../*/}"
+		j="${i#$1/}"
 	
 		if [[ "$j" == "compiled" ]]; then
 			#don't try to compile the compiled directory
